@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 from math import sqrt
 
@@ -12,11 +14,20 @@ class MonteCarloSearchTree(dict):
         self.c_puct = c_puct
 
     def search(self, state: GameState, model: Model):
-        if state.is_terminal():  # If the state is terminal, return the score  TODO -- negate???
+        """
+        Perform Monte Carlo Tree Search on a deep copy of the state
+        :param state: The state on which mcts should be performed
+        :param model: The model that will provide mcts with (policy, value) estimations
+        :return: The z-value, corresponding to whether the search resulted in a win (z=1) or loss (z=-1)
+        """
+        return self._search(copy.deepcopy(state), model)
+
+    def _search(self, state: GameState, model: Model):
+        if state.is_terminal():  # If the state is terminal, return the score
             return state.get_score()
 
         actions = state.get_possible_moves()
-        if state not in self.keys():  # Expand the search tree
+        if hash(state) not in self.keys():  # Expand the search tree
             # Store for each node:
             # - Q: The expected reward for taking action a from the game state
             # - N: The number of times action a was performed from the game state during simulations
@@ -43,30 +54,31 @@ class MonteCarloSearchTree(dict):
         n[a] += 1
         return v
 
-    def pi(self, state: GameState, temperature=1):
+    def pi(self, state: GameState, temperature: float=1):
         """
         Give an improved policy based on the counts in N
         :param state: The state from which the policy should be obtained
         :param temperature: Scalar influencing degree of exploration
+                            A higher temperature gives a larger focus on the move with highest N
         :return: a dictionary mapping each valid action to a probability
         """
         _, _, _, n = self[hash(state)]
 
         if temperature == 0:
             # The action with highest count should be chosen with probability=1
-            a_max = max(n.keys(), key=n.get)
-            return {a: 1 if a == a_max else 0 for a in n.keys()}
+            max_action = max(n.keys(), key=n.get)
+            return {action: 1 if action == max_action else 0 for action in n.keys()}
         else:
             # The actions should be chosen proportional to N(s, a)^(1 / temperature)
-            n_temp = {a: v ** (1 / temperature) for a, v in n.items()}
+            n_temp = {action: count ** (1 / temperature) for action, count in n.items()}
             # Sum total for normalization
             n_total = sum(n_temp.values())
             if n_total == 0:
-                return {a: 1 / len(n) for a in n.keys()}
+                return {action: 1 / len(n) for action in n.keys()}
             else:
-                return {a: v / n_total for a, v in n_temp.items()}
+                return {action: count / n_total for action, count in n_temp.items()}
 
-    def action(self, state: GameState, temperature=1):
+    def action(self, state: GameState, temperature: float=1):
         """
         Sample an action from the policy obtained from the search tree
         :param state: The state from which the action should be taken
@@ -82,14 +94,16 @@ class MonteCarloSearchTree(dict):
 
 if __name__ == '__main__':
     from games.connect4 import Connect4
-    from model import DummyModel
+    from connect4_model import TestNetwork
 
     tree = MonteCarloSearchTree()
 
     s = Connect4()
-    m = DummyModel()
+    m = TestNetwork()
+    m.model.load_weights('checkpoint.pth.tar')
 
-    tree.search(s, m)
-    tree.search(s, m)
-
-    print(tree)
+    while not s.is_terminal():
+        for _ in range(100):
+            tree.search(s, m)
+        a, policy = tree.action(s, temperature=0.5)
+        s.do_move(a)

@@ -5,8 +5,8 @@ from mcts import MonteCarloSearchTree
 from model import Model
 
 number_of_iterations = 1000000
-number_of_episodes = 100
-number_of_mcts_simulations = 25
+number_of_episodes = 60
+number_of_mcts_simulations = 40
 number_of_duels = 30
 number_of_exploring_moves = 30
 threshold = 0.55
@@ -16,7 +16,8 @@ def policy_iter_self_play(game: callable, model_type: callable):
     # Initialize a random model
     model = model_type()
     examples = []
-    testtesttest = 0
+    model_counter = 0  # TODO -- remove
+    iter_counter = 0  # TODO -- remove
     for i in range(number_of_iterations):
         # Play a number of games of self-play and obtain examples to learn from
         # Each example is a tuple of (game state, corresponding policy, final reward)
@@ -29,9 +30,11 @@ def policy_iter_self_play(game: callable, model_type: callable):
         # If the candidate model won more than the set threshold, reject the old model
         if frac_win > threshold:
             model = candidate_model
-            testtesttest += 1
+            model_counter += 1
         print('Fraction of games won: {}'.format(frac_win))
-        print('Models replaced so far: {}'.format(testtesttest))
+        print('Models replaced so far: {}'.format(model_counter))
+        print('Iteration {} complete'.format(iter_counter))
+        iter_counter += 1
     return model
 
 
@@ -64,6 +67,7 @@ def execute_episode(game: callable, model: Model):
         move_counter += 1
 
     # If the game ended, add the final result to the examples and return them
+    # reward=1 if player 1 won, reward=-1 if player 2 won
     reward = state.get_score()
     for e in examples:
         e.append(reward)

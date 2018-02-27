@@ -23,19 +23,16 @@ class GameState:
         raise Exception("Unimplemented!")
 
     def get_scores(self):
-        """
-        :return: The scores for each player
-        """
         raise Exception("Unimplemented!")
 
     def get_score(self):
         """
-        :return: The score of the player that has just made a move
+        :return: 1 if player 1 has won, -1 if player 2 has won, 0 otherwise
         """
         raise Exception("Unimplemented!")
 
     def get_observation(self):
         """
-        :return: A suitable neural network input
+        :return: a simplified game state from the perspective of the current player
         """
         raise Exception("Unimplemented!")

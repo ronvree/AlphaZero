@@ -2,7 +2,7 @@ import numpy as np
 from game import GameState
 
 # Grid boundaries
-MAX_X, MAX_Y = (7, 6)
+MAX_X, MAX_Y = (5, 4)
 # Number of players
 NUMBER_OF_PLAYERS = 2
 # Number of pieces that need to align
@@ -55,7 +55,7 @@ class Connect4(GameState):
         return self.possible_moves
 
     def _compute_possible_moves(self):
-        return [x for x in range(MAX_X) if self.grid[x][MAX_Y - 1] == 0]
+        return [x for x in range(MAX_X) if self.grid[x][MAX_Y - 1] == 0]  # TODO -- complement top row
 
     def _update_possible_moves(self):
         self.possible_moves = self._compute_possible_moves()
@@ -69,7 +69,7 @@ class Connect4(GameState):
             if self.grid[x][y] == 0:
                 self.grid[x][y] = self.current_player
                 self.hash ^= self._zobrist_table[self._player_to_index(self.current_player)][x][y]
-                self.last_move = (x, y)
+                self.last_move = (x, y)  # TODO -- last move doesnt need to be stored in game state
                 break
         self._update_winner()
         self._update_possible_moves()
@@ -79,7 +79,7 @@ class Connect4(GameState):
     def _update_winner(self):
         if self.last_move is not None:
             x, y = self.last_move
-            for dx in [0, 1, -1]:
+            for dx in [0, 1, -1]:  # TODO -- CHECK WIN BY MATRIX INNER PRODUCT
                 for dy in [0, 1, -1]:
                     if dx == 0 and dy == 0:  # TODO -- METHOD NOW COMPUTES SOME AXES MULTIPLE TIMES!
                         continue
@@ -117,12 +117,6 @@ class Connect4(GameState):
 
     def get_score(self):
         return self.winner
-        # if self.winner == self.current_player:
-        #     return -1
-        # elif self.winner == 0:
-        #     return 0
-        # else:
-        #     return 1
 
     def get_observation(self):
         return self.current_player * self.grid

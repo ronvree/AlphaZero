@@ -1,33 +1,71 @@
 from connect4_model import TestNetwork
+from game import GameState
 from games.connect4 import Connect4
 from mcts import MonteCarloSearchTree
+from model import Model
+
+
+def play(game: callable, p1: callable, p2: callable):
+    players = [p1, p2]
+    state = game()
+    current = 0
+    while not state.is_terminal():
+        state.do_move(players[current](state))
+        current = 1 - current
+    print(state)  # TODO -- netjes
+    return state.get_scores()
+
+
+def play_model(game: callable, p: callable, model: Model, start: bool = True, nr_of_mcts_simulations: int=100):
+    mcts = MonteCarloSearchTree()
+
+    def determine_move(state):
+        for _ in range(nr_of_mcts_simulations):
+            mcts.search(state, model)
+        return mcts.action(state, temperature=1)[0]
+
+    if start:
+        return play(game, p, determine_move)
+    else:
+        return play(game, determine_move, p)
+
+
+def play_random(game: callable, model: Model, n: int=100, nr_of_mcts_simulations: int=100, verbose: bool=True):
+    win_counts = np.zeros(2)
+    for i in range(n):
+        if verbose:
+            print('Playing game {}'.format(i))
+        score = play_model(game, random_input, model, start=bool(i % 2), nr_of_mcts_simulations=nr_of_mcts_simulations)
+        if i % 2 == 0:
+            win_counts += score
+        else:
+            win_counts += np.roll(score, 1)
+    # return win_counts[0] / sum(win_counts)
+    return win_counts
+
+
+def human_input(state: GameState):
+    print("Current game state:")
+    print(state)
+    print("Choose from possible actions: (by index)")
+    actions = state.get_possible_moves()
+    print(list(enumerate(actions)))
+    input_index = int(input())
+    return actions[input_index]
+
+
+def random_input(state: GameState):
+    actions = state.get_possible_moves()
+    return actions[np.random.randint(len(actions))]
+
 
 if __name__ == '__main__':
     import numpy as np
 
-    game_state = Connect4()
-
-    # Initialize network f
     checkpoint_model = TestNetwork()
     checkpoint_model.model.load_weights('checkpoint.pth.tar')
-    # Initialize search tree alpha
-    mcts = MonteCarloSearchTree()
 
-    def determine_move(state):
-        for _ in range(25):
-            mcts.search(state, checkpoint_model)
-        return mcts.action(state, temperature=1)[0]
+    play_model(Connect4, human_input, checkpoint_model, start=False, nr_of_mcts_simulations=40)
 
-    player1 = determine_move
-    player2 = lambda s: int(input())
-    player3 = lambda s: np.random.randint(7)
-
-    players = [player1, player2]
-
-    current = 0
-    print(game_state)
-    while not game_state.is_terminal():
-        game_state.do_move(players[current](game_state))
-        current = 1 - current
-        print(game_state)
-        print(game_state.winner)
+    # win_frac = play_random(Connect4, checkpoint_model, n=700, nr_of_mcts_simulations=40)
+    # print(win_frac)

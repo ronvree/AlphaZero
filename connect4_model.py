@@ -14,14 +14,15 @@ class TestNetwork(Model):
 
         self.input_board = Input(shape=(MAX_X, MAX_Y, 1), name='input')
 
-        # conv_input = Reshape((MAX_X, MAX_Y, 1))(self.input_board)
+        # conv_layer1 = Activation('relu')(BatchNormalization()(Conv2D(128, 4, padding='same')(self.input_board)))
+        # conv_layer2 = Activation('relu')(BatchNormalization()(Conv2D(64, 3, padding='same')(conv_layer1)))
+        # conv_layer3 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer2)))
+        # conv_layer4 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer3)))
+        # conv_flat = Flatten()(conv_layer4)
 
         conv_layer1 = Activation('relu')(BatchNormalization()(Conv2D(128, 4, padding='same')(self.input_board)))
-        conv_layer2 = Activation('relu')(BatchNormalization()(Conv2D(64, 3, padding='same')(conv_layer1)))
-        conv_layer3 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer2)))
-        conv_layer4 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer3)))
-
-        conv_flat = Flatten()(conv_layer4)
+        conv_layer2 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer1)))
+        conv_flat = Flatten()(conv_layer2)
 
         dropout_layer = Dropout(0.1)(Activation('relu')(BatchNormalization()(Dense(256)(conv_flat))))
 
@@ -30,7 +31,7 @@ class TestNetwork(Model):
 
         self.model = ks.Model(inputs=self.input_board, outputs=[self.pi, self.v])
 
-        self.model.compile(loss=['categorical_crossentropy', 'mean_squared_error'], optimizer=SGD())
+        self.model.compile(loss=['categorical_crossentropy', 'mean_squared_error'], optimizer=SGD(lr=0.001))
 
     def predict(self, s: GameState):
         state = s.get_observation()
@@ -58,6 +59,8 @@ class TestNetwork(Model):
         for s in states:
             # board = s.get_observation()
             input_boards.append(np.reshape(s, (MAX_X, MAX_Y, 1)))
+
+        # Map all actions to a fixed index
         target_pis = []
         for pi_dict in target_pi_dicts:
             pi = np.zeros(self.output_size)
@@ -69,7 +72,6 @@ class TestNetwork(Model):
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
 
-        self.model.fit(x=input_boards, y=[target_pis, target_vs], epochs=10, batch_size=128, shuffle=True)
+        self.model.fit(x=input_boards, y=[target_pis, target_vs], epochs=10, batch_size=128, shuffle=True, verbose=2)
 
         return self_copy
-
