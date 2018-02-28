@@ -47,7 +47,7 @@ class MonteCarloSearchTree(dict):
 
         # Perform the selected action on the state and continue the simulation
         # Negate the value returned, as the 'current player' perspective is changed
-        v = -self.search(state.do_move(a), model)
+        v = -self._search(state.do_move(a), model)
 
         # Propagate the reward back up the tree
         q[a] = (n[a] * q[a] + v) / (n[a] + 1)

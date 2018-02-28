@@ -5,7 +5,7 @@ from mcts import MonteCarloSearchTree
 from model import Model
 
 number_of_iterations = 1000000
-number_of_episodes = 60
+number_of_episodes = 100
 number_of_mcts_simulations = 40
 number_of_duels = 30
 number_of_exploring_moves = 30

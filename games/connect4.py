@@ -2,7 +2,7 @@ import numpy as np
 from game import GameState
 
 # Grid boundaries
-MAX_X, MAX_Y = (5, 4)
+MAX_X, MAX_Y = (7, 6)
 # Number of players
 NUMBER_OF_PLAYERS = 2
 # Number of pieces that need to align

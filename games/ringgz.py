@@ -10,7 +10,7 @@ MAX_X, MAX_Y = 5, 5
 # Possible ring sizes
 SIZES = 4
 # Player colors
-COLORS = ['red', 'yellow', 'blue', 'green']
+COLORS = ['blue', 'green', 'yellow', 'red']
 # Start piece
 START_PIECE = [('ring', COLORS[s], s) for s in range(SIZES)]
 WAIT_TOKEN = ('wait',)

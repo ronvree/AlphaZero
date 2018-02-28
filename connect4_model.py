@@ -14,15 +14,15 @@ class TestNetwork(Model):
 
         self.input_board = Input(shape=(MAX_X, MAX_Y, 1), name='input')
 
-        # conv_layer1 = Activation('relu')(BatchNormalization()(Conv2D(128, 4, padding='same')(self.input_board)))
-        # conv_layer2 = Activation('relu')(BatchNormalization()(Conv2D(64, 3, padding='same')(conv_layer1)))
-        # conv_layer3 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer2)))
-        # conv_layer4 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer3)))
-        # conv_flat = Flatten()(conv_layer4)
-
         conv_layer1 = Activation('relu')(BatchNormalization()(Conv2D(128, 4, padding='same')(self.input_board)))
-        conv_layer2 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer1)))
-        conv_flat = Flatten()(conv_layer2)
+        conv_layer2 = Activation('relu')(BatchNormalization()(Conv2D(64, 3, padding='same')(conv_layer1)))
+        conv_layer3 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer2)))
+        conv_layer4 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer3)))
+        conv_flat = Flatten()(conv_layer4)
+
+        # conv_layer1 = Activation('relu')(BatchNormalization()(Conv2D(128, 4, padding='same')(self.input_board)))
+        # conv_layer2 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer1)))
+        # conv_flat = Flatten()(conv_layer2)
 
         dropout_layer = Dropout(0.1)(Activation('relu')(BatchNormalization()(Dense(256)(conv_flat))))
 
@@ -54,19 +54,33 @@ class TestNetwork(Model):
         self.model.save_weights('checkpoint.pth.tar')
         self_copy = TestNetwork()
         self_copy.model.load_weights('checkpoint.pth.tar')
-        states, target_pi_dicts, target_vs = list(zip(*examples))
-        input_boards = []
-        for s in states:
-            # board = s.get_observation()
-            input_boards.append(np.reshape(s, (MAX_X, MAX_Y, 1)))
 
-        # Map all actions to a fixed index
-        target_pis = []
-        for pi_dict in target_pi_dicts:
-            pi = np.zeros(self.output_size)
-            for a, v in pi_dict.items():
-                pi[a] = v
-            target_pis.append(pi)
+        # Prepare all examples for training
+        input_boards, target_pis, target_vs = [], [], []
+        for s, pi, v in examples:
+            # Reshape the state observation to an input suitable for convolution
+            input_boards.append(np.reshape(s, (MAX_X, MAX_Y, 1)))
+            # Map all actions to a fixed index
+            pi_ = np.zeros(self.output_size)
+            for a, p in pi.items():
+                pi_[a] = p
+            target_pis.append(pi_)
+            # Add reward value
+            target_vs.append(v)
+
+
+        # states, target_pi_dicts, target_vs = list(zip(*examples))
+        # input_boards = []
+        # for s in states:
+        #     input_boards.append(np.reshape(s, (MAX_X, MAX_Y, 1)))
+        #
+        # # Map all actions to a fixed index
+        # target_pis = []
+        # for pi_dict in target_pi_dicts:
+        #     pi = np.zeros(self.output_size)
+        #     for a, v in pi_dict.items():
+        #         pi[a] = v
+        #     target_pis.append(pi)
 
         input_boards = np.asarray(input_boards)
         target_pis = np.asarray(target_pis)
