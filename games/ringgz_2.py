@@ -12,6 +12,10 @@ class Ringgz2(Ringgz):
     def _get_sign(player: int):
         return 1 if player == 0 else -1
 
+    @staticmethod
+    def _get_opponent(player: int):
+        return 1 - player
+
     def get_score(self):
         """
         :return: 1 if player 1 has won, -1 if player 2 has won, 0 otherwise
@@ -59,6 +63,7 @@ class Ringgz2(Ringgz):
                                 ))
         # Obtain current player perspective
         current_colors = self.player_colors[self.current_player]
+        opponent_colors = self.player_colors[self._get_opponent(self.current_player)]
         # Fill values
         for x in range(MAX_X):
             for y in range(MAX_Y):
@@ -72,7 +77,7 @@ class Ringgz2(Ringgz):
                     if c in current_colors:
                         field[x][y][SIZES][current_colors.index(c)] = 1
                     else:
-                        field[x][y][SIZES][current_colors.index(c)] = -1
+                        field[x][y][SIZES][opponent_colors.index(c)] = -1
                 # Check for rings
                 elif isinstance(territory, list):
                     for s in range(SIZES):
@@ -82,5 +87,6 @@ class Ringgz2(Ringgz):
                             if c in current_colors:
                                 field[x][y][s][current_colors.index(c)] = 1
                             else:
-                                field[x][y][s][current_colors.index(c)] = -1
+                                field[x][y][s][opponent_colors.index(c)] = -1
         return field
+
