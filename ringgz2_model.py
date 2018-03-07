@@ -35,9 +35,9 @@ class TestNetwork(Model):
 
     def predict(self, s: GameState):
         state = s.get_observation()
-        state = np.reshape(state, (1,) + state.size + (1,))
+        state = np.reshape(state, (MAX_X, MAX_Y, SIZES * 2 * 2, 1))
 
-        [pi_all], v = self.model.predict(state)
+        [pi_all], v = self.model.predict([state])
 
         legal_actions = s.get_possible_moves()
         mask = np.zeros(self.output_size)
