@@ -88,7 +88,7 @@ class MonteCarloSearchTree(dict):
         pi = self.pi(state, temperature)
         # Introduce an ordering in the (action, probability) pairs
         items = list(pi.items())
-        # So an random.choice can select an index with probability p for picking an action
+        # So a random.choice can select an index with probability p for picking an action
         return items[np.random.choice(len(items), p=[p[1] for p in items])][0], pi
 
 

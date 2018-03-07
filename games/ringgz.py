@@ -273,7 +273,7 @@ class Ringgz(GameState):
         self.current_player = (self.current_player + 1) % self.number_of_players
         return self.current_player
 
-    def get_scores(self):  # TODO -- different name
+    def get_majorities(self):
         scores = [0] * self.number_of_players
         for x in range(MAX_X):
             for y in range(MAX_Y):
@@ -292,8 +292,41 @@ class Ringgz(GameState):
                             scores[player] += 1
         return scores
 
-    def get_score(self):
-        return self.get_scores()[self.current_player]  # TODO!!!!!!!!!!!!!!!!!!!! PROPER PLAYER!!!!!!!
+    @staticmethod
+    def get_all_actions():
+        actions = [WAIT_TOKEN]
+        for x in range(MIN_START_X, MAX_START_X):
+            for y in range(MIN_START_Y, MAX_START_Y):
+                actions.append((x, y, None))
+        for x in range(MAX_X):
+            for y in range(MAX_Y):
+                for c in COLORS:
+                    for s in range(SIZES):
+                        actions.append((x, y, ('ring', c, s)))
+                    actions.append((x, y, ('base', c)))
+        return actions
+
+    # @staticmethod
+    # def get_action_offset(action: tuple):
+    #     if action == WAIT_TOKEN:
+    #         return 0
+    #     x, y, piece = action
+    #     offset = 1
+    #     if piece is None:
+    #         for x_ in range(MIN_START_X, MAX_START_X):
+    #             for y_ in range(MIN_START_Y, MAX_START_Y):
+    #                 if x == x_ and y == y_:
+    #                     return offset
+    #                 offset += 1
+    #     offset = 1 + (MAX_START_X - MIN_START_X + 1) * (MAX_START_Y - MIN_START_Y + 1)
+    #     territory_step = len(COLORS) * (SIZES + 1)
+    #     for x_ in range(MAX_X):
+    #         for y_ in range(MAX_Y):
+    #             for c in COLORS:
+    #
+    #
+    #
+    #             offset += territory_step
 
 
 if __name__ == '__main__':
@@ -313,7 +346,7 @@ if __name__ == '__main__':
     #     print(move)
     #     state.do_move(move)
     #
-    # print(state.get_scores())
+    # print(state.get_majorities())
     #
     # print(state)
 
