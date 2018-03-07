@@ -116,9 +116,21 @@ class Connect4(GameState):
         return scores
 
     def get_score(self):
+        """
+        :return: 1 if player 1 has won, -1 if player 2 has won, 0 otherwise
+        """
         return self.winner
 
+    def get_reward(self):
+        """
+        :return: 1 if the current player won, -1 if the current player lost, 0 otherwise
+        """
+        return self.current_player * self.winner
+
     def get_observation(self):
+        """
+        :return: a simplified game state from the perspective of the current player
+        """
         return self.current_player * self.grid
 
     @staticmethod

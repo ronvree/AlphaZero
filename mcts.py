@@ -23,8 +23,8 @@ class MonteCarloSearchTree(dict):
         return self._search(copy.deepcopy(state), model)
 
     def _search(self, state: GameState, model: Model):
-        if state.is_terminal():  # If the state is terminal, return the score
-            return state.get_score()
+        if state.is_terminal():  # If the state is terminal, return the reward from the current player perspective
+            return state.get_reward()
 
         actions = state.get_possible_moves()
         if hash(state) not in self.keys():  # Expand the search tree
@@ -86,7 +86,7 @@ class MonteCarloSearchTree(dict):
         :return: A two-tuple of (the sampled action, the policy it was sampled from)
         """
         pi = self.pi(state, temperature)
-        # Introduce an ordering in the items
+        # Introduce an ordering in the (action, probability) pairs
         items = list(pi.items())
         # So an random.choice can select an index with probability p for picking an action
         return items[np.random.choice(len(items), p=[p[1] for p in items])][0], pi

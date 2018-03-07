@@ -31,6 +31,12 @@ class GameState:
         """
         raise Exception("Unimplemented!")
 
+    def get_reward(self):
+        """
+        :return: 1 if the current player won, -1 if the current player lost, 0 otherwise
+        """
+        raise Exception("Unimplemented!")
+
     def get_observation(self):
         """
         :return: a simplified game state from the perspective of the current player

@@ -273,7 +273,7 @@ class Ringgz(GameState):
         self.current_player = (self.current_player + 1) % self.number_of_players
         return self.current_player
 
-    def get_scores(self):
+    def get_scores(self):  # TODO -- different name
         scores = [0] * self.number_of_players
         for x in range(MAX_X):
             for y in range(MAX_Y):

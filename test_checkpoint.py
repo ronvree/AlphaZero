@@ -65,7 +65,9 @@ if __name__ == '__main__':
     checkpoint_model = TestNetwork()
     checkpoint_model.model.load_weights('checkpoint.pth.tar')
 
-    play_model(Connect4, human_input, checkpoint_model, start=False, nr_of_mcts_simulations=40)
+    # play_model(Connect4, human_input, checkpoint_model, start=False, nr_of_mcts_simulations=40)
 
-    # win_frac = play_random(Connect4, checkpoint_model, n=700, nr_of_mcts_simulations=40)
-    # print(win_frac)
+    # play(Connect4, human_input, human_input)
+
+    win_frac = play_random(Connect4, checkpoint_model, n=700, nr_of_mcts_simulations=40)
+    print(win_frac)
