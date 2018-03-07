@@ -16,7 +16,7 @@ class TestNetwork(Model):
         self.action_space = Ringgz2.get_all_actions()
         self.output_size = len(self.action_space)
 
-        self.input_board = Input(shape=(MAX_X, MAX_Y, SIZES * 2 * 2, 1), name='input')
+        self.input_board = Input(shape=(MAX_X, MAX_Y, (SIZES + 1) * 2 * 2, 1), name='input')
 
         conv_layer1 = Activation('relu')(BatchNormalization()(Conv3D(128, 4, padding='same')(self.input_board)))
         conv_layer2 = Activation('relu')(BatchNormalization()(Conv3D(64, 3, padding='same')(conv_layer1)))
@@ -35,7 +35,7 @@ class TestNetwork(Model):
 
     def predict(self, s: GameState):
         state = s.get_observation()
-        state = np.reshape(state, (MAX_X, MAX_Y, SIZES * 2 * 2, 1))
+        state = np.reshape(state, (MAX_X, MAX_Y, (SIZES + 1) * 2 * 2, 1))
 
         [pi_all], v = self.model.predict([state])
 
@@ -59,7 +59,7 @@ class TestNetwork(Model):
         input_boards, target_pis, target_vs = [], [], []
         for s, pi, v in examples:
             # Reshape the state observation to an input suitable for convolution
-            input_boards.append(np.reshape(s, (MAX_X, MAX_Y, SIZES * 2 * 2, 1)))
+            input_boards.append(np.reshape(s, (MAX_X, MAX_Y, (SIZES + 1) * 2 * 2, 1)))
             # # Map all actions to a fixed index
             pi_ = np.zeros(self.output_size)
             for a, p in pi.items():
