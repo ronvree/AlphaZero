@@ -42,7 +42,7 @@ class MonteCarloSearchTree(dict):
         p, v, q, n = self[hash(state)]  # Recall policy p, value v, expected reward q, simulation count n
 
         # Pick an action to explore by maximizing U, the upper confidence bound on the Q-values
-        _, a = max([(q[a] + self.c_puct * p[a] * sqrt(sum(n)) / (1 + n[a]), a) for a in actions],
+        _, a = max([(q[a] + self.c_puct * p[a] * sqrt(sum(n.values())) / (1 + n[a]), a) for a in actions],
                    key=lambda x: x[0])
 
         # Perform the selected action on the state and continue the simulation
