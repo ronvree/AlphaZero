@@ -295,8 +295,8 @@ class Ringgz(GameState):
     @staticmethod
     def get_all_actions():
         actions = [WAIT_TOKEN]
-        for x in range(MIN_START_X, MAX_START_X):
-            for y in range(MIN_START_Y, MAX_START_Y):
+        for x in range(MIN_START_X, MAX_START_X + 1):
+            for y in range(MIN_START_Y, MAX_START_Y + 1):
                 actions.append((x, y, None))
         for x in range(MAX_X):
             for y in range(MAX_Y):
@@ -305,28 +305,6 @@ class Ringgz(GameState):
                         actions.append((x, y, ('ring', c, s)))
                     actions.append((x, y, ('base', c)))
         return actions
-
-    # @staticmethod
-    # def get_action_offset(action: tuple):
-    #     if action == WAIT_TOKEN:
-    #         return 0
-    #     x, y, piece = action
-    #     offset = 1
-    #     if piece is None:
-    #         for x_ in range(MIN_START_X, MAX_START_X):
-    #             for y_ in range(MIN_START_Y, MAX_START_Y):
-    #                 if x == x_ and y == y_:
-    #                     return offset
-    #                 offset += 1
-    #     offset = 1 + (MAX_START_X - MIN_START_X + 1) * (MAX_START_Y - MIN_START_Y + 1)
-    #     territory_step = len(COLORS) * (SIZES + 1)
-    #     for x_ in range(MAX_X):
-    #         for y_ in range(MAX_Y):
-    #             for c in COLORS:
-    #
-    #
-    #
-    #             offset += territory_step
 
 
 if __name__ == '__main__':
