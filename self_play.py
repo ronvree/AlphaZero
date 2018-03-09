@@ -124,8 +124,8 @@ if __name__ == '__main__':
 
     # exs = execute_episode(s, m)
 
-    # m = policy_iter_self_play(Connect4, TestNetwork)
-    m = policy_iter_self_play(Ringgz2, ringgz2_model.TestNetwork)
+    m = policy_iter_self_play(Connect4, TestNetwork)
+    # m = policy_iter_self_play(Ringgz2, ringgz2_model.TestNetwork)
     # m = policy_iter_self_play(lambda: Ringgz(2), DummyModel)
 
     print(m)
