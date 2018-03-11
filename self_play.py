@@ -50,8 +50,8 @@ def execute_episode(game: callable, model: Model):
         for _ in range(number_of_mcts_simulations):
             mcts.search(state, model)
 
-        # The first moves have a temperature of 0 for increased exploration
-        tau = 0 if move_counter < number_of_exploring_moves else 1
+        # The first moves have a temperature of 1 for increased exploration
+        tau = 1 if move_counter < number_of_exploring_moves else 0
 
         # Obtain an improved policy from the tree
         a, pi = mcts.action(state, temperature=tau)
@@ -96,7 +96,7 @@ def pit(m_alt: Model, m_orig: Model, game: callable):
             for _ in range(number_of_mcts_simulations):
                 tree.search(state, model)
             # Determine an action by sampling from the policy as defined by the tree
-            a, _ = tree.action(state, temperature=1)  # Temperature = 1 for best move selection (no exploration)
+            a, _ = tree.action(state, temperature=0)  # Temperature = 0 for best move selection (no exploration)
             state.do_move(a)
             current_player = 1 - current_player
         # Add the game result to the win counter (taking player perspective into account)

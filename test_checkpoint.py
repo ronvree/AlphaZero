@@ -22,7 +22,7 @@ def play_model(game: callable, p: callable, model: Model, start: bool = True, nr
     def determine_move(state):
         for _ in range(nr_of_mcts_simulations):
             mcts.search(state, model)
-        return mcts.action(state, temperature=1)[0]
+        return mcts.action(state, temperature=0)[0]
 
     if start:
         return play(game, p, determine_move)
