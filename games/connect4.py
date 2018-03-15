@@ -10,7 +10,9 @@ CONNECT = 4
 
 
 class Connect4(GameState):
-
+    """
+    A game state class corresponding to the game of Connect 4
+    """
     def __init__(self):
         self.grid = np.zeros((MAX_X, MAX_Y))
         self.current_player = 1
@@ -19,9 +21,13 @@ class Connect4(GameState):
         self.last_move = None
         self.possible_moves = self._compute_possible_moves()
 
+    # Initialize a static table used for Zobrist hashing
     _zobrist_table = np.random.randint(1, high=(2 ** 31) - 1, size=(2, MAX_X, MAX_Y))
 
     def __str__(self):
+        """
+        :return: A pretty representation of the game state
+        """
         s = '+' + ('-' * MAX_X) + '+\n'
         for y in range(MAX_Y - 1, -1, -1):
             s += '|'
@@ -37,6 +43,9 @@ class Connect4(GameState):
         return s
 
     def __hash__(self):
+        """
+        :return: The pre-computed Zobrist hash
+        """
         return int(self.hash)
 
     @staticmethod
@@ -52,18 +61,35 @@ class Connect4(GameState):
         return 0 <= x < MAX_X and 0 <= y < MAX_Y
 
     def get_possible_moves(self):
+        """
+        :return: The pre-computed valid actions in this game state
+        """
         return self.possible_moves
 
     def _compute_possible_moves(self):
+        """
+        :return: A list of all valid actions in this game state
+        """
         return [x for x in range(MAX_X) if self.grid[x][MAX_Y - 1] == 0]  # TODO -- complement top row
 
     def _update_possible_moves(self):
+        """
+        Compute and set the valid moves in this game state
+        """
         self.possible_moves = self._compute_possible_moves()
 
     def is_terminal(self):
+        """
+        :return: A boolean indicating whether the game has ended
+        """
         return self.winner != 0 or len(self.possible_moves) == 0
 
     def do_move(self, x: int):
+        """
+        Perform a move on this game state
+        :param x: The move to be performed
+        :return: self, after the move has been performed
+        """
         assert self.valid_x(x)
         for y in range(MAX_Y):
             if self.grid[x][y] == 0:
@@ -77,6 +103,9 @@ class Connect4(GameState):
         return self
 
     def _update_winner(self):
+        """
+        Check whether the last move that has been made satisfies the winning criteria. If so, updates game winner
+        """
         if self.last_move is not None:
             x, y = self.last_move
             for dx in [0, 1, -1]:  # TODO -- CHECK WIN BY MATRIX INNER PRODUCT
@@ -89,6 +118,15 @@ class Connect4(GameState):
                         return
 
     def _count_in_direction(self, x, y, dx, dy):
+        """
+        Helper method for self._update_winner. Counts the number of subsequent pieces in the specified direction
+        :param x: The x coordinate to start from
+        :param y: The y coordinate to start from
+        :param dx: The change in x per step in the direction
+        :param dy: The change in y per step in the direction
+        :return: The number of subsequent pieces equal to the piece in (x, y) in the specified direction (excluding
+                 the piece at (x, y)
+        """
         count = 0
         for x_, y_ in [(x + i * dx, y + i * dy) for i in range(1, CONNECT)]:
             if self.valid_coordinate(x_, y_) and self.grid[x_][y_] == self.current_player:
@@ -98,11 +136,21 @@ class Connect4(GameState):
         return count
 
     def _switch_players(self):
+        """
+        Switch which player's turn it is
+        :return: The current player after switching
+        """
         self.current_player *= -1
         return self.current_player
 
     @staticmethod
     def _player_to_index(player: int):
+        """
+        Map both player 1 and 2 to index 0 and 1, respectively
+        :param player: The player for which the index should be obtained. Note that this is 1 for player 1 and -1 for
+                       player 2
+        :return:
+        """
         assert abs(player) == 1
         if player == 1:
             return 0
@@ -110,6 +158,11 @@ class Connect4(GameState):
             return 1
 
     def get_scores(self):
+        """
+        :return: [1, 0] if player 1 won,
+                 [0, 1] if player 2 won,
+                 [0, 0] otherwise
+        """
         scores = [0] * NUMBER_OF_PLAYERS
         if self.winner != 0:
             scores[self._player_to_index(self.winner)] = 1
@@ -135,11 +188,10 @@ class Connect4(GameState):
 
     @staticmethod
     def get_all_actions():
+        """
+        :return: All possible actions that can be played in a game of Connect 4
+        """
         return list(range(MAX_X))
-
-    @staticmethod
-    def get_observation_size():
-        return MAX_X
 
 
 if __name__ == '__main__':

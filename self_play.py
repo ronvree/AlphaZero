@@ -13,8 +13,14 @@ threshold = 0.55
 
 
 def policy_iter_self_play(game: callable, model_type: callable):
+    """
+    Perform policy iteration to obtain good model
+    :param game: The game to be played
+    :param model_type: The model type to be optimized
+    :return: the best model found using policy iteration
+    """
     # Initialize a random model
-    model = model_type()
+    model = model_type()  # TODO -- random initialization?
     examples = []
     model_counter = 0  # TODO -- remove
     iter_counter = 0  # TODO -- remove
@@ -39,6 +45,12 @@ def policy_iter_self_play(game: callable, model_type: callable):
 
 
 def execute_episode(game: callable, model: Model):
+    """
+    Execute one episode of self-play
+    :param game: The game to be played
+    :param model: The model used to generate examples
+    :return: a list of examples (explained below) that is obtained during self-play
+    """
     examples = []
     mcts = MonteCarloSearchTree()
     # Initialize the game state
@@ -76,14 +88,21 @@ def execute_episode(game: callable, model: Model):
 
 
 def pit(m_alt: Model, m_orig: Model, game: callable):
+    """
+    Let two models play a certain number of games against each other
+    :param m_alt: The 'alternative' model
+    :param m_orig: The 'original' model
+    :param game: The game that should be played
+    :return: the fraction of games won by the 'alternative' model
+    """
     # Keep track of the number of games won for each model
     wins = np.zeros(2)
 
+    # Initialize a search tree for both models
+    mcts_alt, mcts_orig = MonteCarloSearchTree(), MonteCarloSearchTree()  # TODO -- reset mcts each game? Stochasticity in games?
+
     # Let the models play a number of games
     for duel in range(number_of_duels):
-        # Initialize a search tree for both models
-        mcts_alt, mcts_orig = MonteCarloSearchTree(), MonteCarloSearchTree()
-
         # Store which model corresponds to which player
         # Let the models take turns in who is the starting player
         models = {duel % 2: (m_alt, mcts_alt), (duel + 1) % 2: (m_orig, mcts_orig)}

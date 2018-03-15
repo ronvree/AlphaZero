@@ -16,7 +16,7 @@ def play(game: callable, p1: callable, p2: callable):
     return state.get_scores()
 
 
-def play_model(game: callable, p: callable, model: Model, start: bool = True, nr_of_mcts_simulations: int=100):
+def play_model(game: callable, p: callable, model: Model, start: bool=True, nr_of_mcts_simulations: int=100):
     mcts = MonteCarloSearchTree()
 
     def determine_move(state):
