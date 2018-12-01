@@ -1,28 +1,28 @@
-
-
 import keras as ks
 from keras.layers import *
 from keras.optimizers import SGD
 
-from game import GameState
-from games.ringgz import MAX_X, MAX_Y, SIZES
-from games.ringgz_2 import Ringgz2
-from model import Model
+from v1.games.connect4 import GameState, MAX_X, MAX_Y
+from v1.model import Model
 
 
 class TestNetwork(Model):
 
     def __init__(self):
-        self.action_space = Ringgz2.get_all_actions()
+        self.action_space = list(range(MAX_X))
         self.output_size = len(self.action_space)
 
-        self.input_board = Input(shape=(MAX_X, MAX_Y, SIZES + 1, 2 * 2, 1), name='input')
+        self.input_board = Input(shape=(MAX_X, MAX_Y, 1), name='input')
 
-        conv_layer1 = Activation('relu')(BatchNormalization()(Conv3D(128, 4, padding='same')(self.input_board)))
-        conv_layer2 = Activation('relu')(BatchNormalization()(Conv3D(64, 3, padding='same')(conv_layer1)))
-        conv_layer3 = Activation('relu')(BatchNormalization()(Conv3D(64, 3)(conv_layer2)))
-        conv_layer4 = Activation('relu')(BatchNormalization()(Conv3D(64, 3)(conv_layer3)))
+        conv_layer1 = Activation('relu')(BatchNormalization()(Conv2D(128, 4, padding='same')(self.input_board)))
+        conv_layer2 = Activation('relu')(BatchNormalization()(Conv2D(64, 3, padding='same')(conv_layer1)))
+        conv_layer3 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer2)))
+        conv_layer4 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer3)))
         conv_flat = Flatten()(conv_layer4)
+
+        # conv_layer1 = Activation('relu')(BatchNormalization()(Conv2D(128, 4, padding='same')(self.input_board)))
+        # conv_layer2 = Activation('relu')(BatchNormalization()(Conv2D(64, 3)(conv_layer1)))
+        # conv_flat = Flatten()(conv_layer2)
 
         dropout_layer = Dropout(0.1)(Activation('relu')(BatchNormalization()(Dense(256)(conv_flat))))
 
@@ -35,19 +35,19 @@ class TestNetwork(Model):
 
     def predict(self, s: GameState):
         state = s.get_observation()
-        state = np.reshape(state, (1, MAX_X, MAX_Y, SIZES + 1, 2 * 2, 1))
+        state = np.reshape(state, (1, MAX_X, MAX_Y, 1))
 
         [pi_all], v = self.model.predict(state)
 
         legal_actions = s.get_possible_moves()
         mask = np.zeros(self.output_size)
         for a in legal_actions:
-            mask[self.action_space.index(a)] = 1
+            mask[a] = 1
         pi_all *= mask
         pi_all = pi_all.astype(np.float64)
         pi_all /= pi_all.sum()  # re-normalize probabilities
 
-        pi = {a: pi_all[self.action_space.index(a)] for a in legal_actions}
+        pi = {a: pi_all[a] for a in legal_actions}
         return pi, v
 
     def fit_new_model(self, examples):
@@ -59,11 +59,11 @@ class TestNetwork(Model):
         input_boards, target_pis, target_vs = [], [], []
         for s, pi, v in examples:
             # Reshape the state observation to an input suitable for convolution
-            input_boards.append(np.reshape(s, (MAX_X, MAX_Y, SIZES + 1, 2 * 2, 1)))
-            # # Map all actions to a fixed index
+            input_boards.append(np.reshape(s, (MAX_X, MAX_Y, 1)))
+            # Map all actions to a fixed index
             pi_ = np.zeros(self.output_size)
             for a, p in pi.items():
-                pi_[self.action_space.index(a)] = p
+                pi_[a] = p
             target_pis.append(pi_)
             # Add reward value
             target_vs.append(v)

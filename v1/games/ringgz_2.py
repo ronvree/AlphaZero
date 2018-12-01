@@ -1,6 +1,6 @@
 import numpy as np
 
-from games.ringgz import Ringgz, MAX_X, MAX_Y, SIZES
+from v1.games.ringgz import Ringgz, MAX_X, MAX_Y, SIZES
 
 
 class Ringgz2(Ringgz):

@@ -1,8 +1,8 @@
 import numpy as np
 from tqdm import tqdm
 
-from mcts import MonteCarloSearchTree
-from model import Model
+from v1.mcts import MonteCarloSearchTree
+from v1.model import Model
 
 number_of_iterations = 1000000
 number_of_episodes = 100
@@ -131,12 +131,8 @@ def pit(m_alt: Model, m_orig: Model, game: callable):
 
 
 if __name__ == '__main__':
-    from connect4_model import TestNetwork
-    from games.connect4 import Connect4
-    from games.ringgz import Ringgz
-    from model import DummyModel
-    import ringgz2_model
-    from games.ringgz_2 import Ringgz2
+    from v1.connect4_model import TestNetwork
+    from v1.games.connect4 import Connect4
 
     # s = Connect4()
     # m = DummyModel()

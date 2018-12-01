@@ -3,14 +3,15 @@ import copy
 import numpy as np
 from math import sqrt
 
-from game import GameState
-from model import Model
+from v1.game import GameState
+from v1.model import Model
 
 
 class MonteCarloSearchTree(dict):
 
     def __init__(self, c_puct=1, **kwargs):
         super().__init__(**kwargs)
+        assert c_puct >= 0
         self.c_puct = c_puct
 
     def search(self, state: GameState, model: Model):
@@ -93,8 +94,8 @@ class MonteCarloSearchTree(dict):
 
 
 if __name__ == '__main__':
-    from games.connect4 import Connect4
-    from connect4_model import TestNetwork
+    from v1.games.connect4 import Connect4
+    from v1.connect4_model import TestNetwork
 
     tree = MonteCarloSearchTree()
 

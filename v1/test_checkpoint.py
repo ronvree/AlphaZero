@@ -1,8 +1,8 @@
-from connect4_model import TestNetwork
-from game import GameState
-from games.connect4 import Connect4
-from mcts import MonteCarloSearchTree
-from model import Model
+from v1.connect4_model import TestNetwork
+from v1.game import GameState
+from v1.games.connect4 import Connect4
+from v1.mcts import MonteCarloSearchTree
+from v1.model import Model
 
 
 def play(game: callable, p1: callable, p2: callable):

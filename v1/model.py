@@ -1,6 +1,6 @@
 import copy
 
-from game import GameState
+from v1.game import GameState
 
 
 class Model:

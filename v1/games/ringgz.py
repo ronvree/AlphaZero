@@ -1,7 +1,7 @@
 from collections import Counter
 
 import numpy as np
-from game import GameState
+from v1.game import GameState
 
 # Allowed number of player boundaries
 MIN_NR_OF_PLAYERS, MAX_NR_OF_PLAYERS = 2, 4
