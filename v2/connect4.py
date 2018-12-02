@@ -22,7 +22,7 @@ class Connect4(GameState):
         self.possible_moves = self._compute_possible_moves()
 
     # Initialize a static table used for Zobrist hashing
-    _zobrist_table = np.random.randint(1, high=(2 ** 31) - 1, size=(2, MAX_X, MAX_Y))
+    _zobrist_table = np.random.randint(1, high=(2 ** 63) - 1, size=(2, MAX_X, MAX_Y), dtype=np.int64)
 
     def __str__(self):
         """

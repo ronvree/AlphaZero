@@ -112,6 +112,7 @@ class GameTree:
         dot = 'digraph {} '.format(graph_name) + ' {\n'
         dot += 'graph [bgcolor=black, fontcolor=white, color=white];\n'
         dot += 'node [bgcolor=black, fontcolor=white, color=white];\n'
+        dot += 'edge [fontcolor=white, color=white];\n'
         dot += self._as_dot(edge_val=edge_val)
         dot += '}\n'
         return dot
