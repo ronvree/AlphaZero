@@ -136,12 +136,6 @@ class TicTacToe(GameState):
     def get_reward(self):
         return self.current_player * self.winner
 
-    def get_observation(self):
-        """
-        :return: a simplified game state from the perspective of the current player
-        """
-        return self.current_player * self.grid
-
 
 if __name__ == '__main__':
 

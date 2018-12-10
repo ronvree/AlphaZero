@@ -14,7 +14,7 @@ class TicTacToeModel(ResidualNeuralNetwork):
                          resd_block_params={'filters': 32})
 
     def state_input(self, s: TicTacToe):
-        return np.reshape(s.get_observation(), newshape=self.input_shape)
+        return np.reshape(s.grid * s.current_player, newshape=self.input_shape)
 
     def deepcopy(self):
         self.model.save_weights('checkpoint.pth.tar')

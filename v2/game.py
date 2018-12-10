@@ -65,9 +65,3 @@ class GameState:
                  0 otherwise
         """
         raise NotImplementedError
-
-    def get_observation(self):
-        """
-        :return: An observation of the game state from the perspective of the current player
-        """
-        raise NotImplementedError
