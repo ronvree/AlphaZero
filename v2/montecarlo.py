@@ -115,18 +115,7 @@ class MCST(collections.MutableMapping):
                 p[a] = (1 - self.epsilon) * p[a] + self.epsilon * np.random.dirichlet([self.alpha])
 
         # Pick an action to explore by maximizing U, the upper confidence bound on the Q-values
-        try:
-            u = {a: self.c_puct * p[a] * sqrt(sum(n.values())) / (1 + n[a]) for a in actions}
-        except KeyError:
-            print("OMG ACTION WASN'T IN NODE. HASH COLLISION MAYBE??")  # TODO -- this is for debugging purposes
-            print(state)
-            print('hash', self.key_transform(state))
-            print('p', p)
-            print('v', v)
-            print('q', q)
-            print('n', n)
-            print('actions', actions)
-
+        u = {a: self.c_puct * p[a] * sqrt(sum(n.values())) / (1 + n[a]) for a in actions}
         a = max(actions, key=lambda a: q[a] + u[a])
 
         # Perform the selected action on the state and continue the simulation

@@ -1,3 +1,4 @@
+import numpy as np
 
 from v2.model import ResidualNeuralNetwork
 from v2.tictactoe import TicTacToe
@@ -7,9 +8,13 @@ class TicTacToeModel(ResidualNeuralNetwork):
 
     def __init__(self):
         super().__init__(TicTacToe,
+                         input_shape=TicTacToe.board_shape(),
                          num_resd_block=3,
                          conv_block_params={'filters': 32},
                          resd_block_params={'filters': 32})
+
+    def state_input(self, s: TicTacToe):
+        return np.reshape(s.get_observation(), newshape=self.input_shape)
 
     def deepcopy(self):
         self.model.save_weights('checkpoint.pth.tar')

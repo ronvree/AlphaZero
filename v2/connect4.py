@@ -18,7 +18,6 @@ class Connect4(GameState):
         self.current_player = 1
         self.hash = 0
         self.winner = 0
-        self.last_move = None
         self.possible_moves = self._compute_possible_moves()
 
     # Initialize a static table used for Zobrist hashing
@@ -78,7 +77,7 @@ class Connect4(GameState):
         """
         :return: A list of all valid actions in this game state
         """
-        return [x for x in range(MAX_X) if self.grid[x][MAX_Y - 1] == 0]  # TODO -- complement top row
+        return [x for x in range(MAX_X) if self.grid[x][MAX_Y - 1] == 0]
 
     def _update_possible_moves(self):
         """
@@ -99,31 +98,30 @@ class Connect4(GameState):
         :return: self, after the move has been performed
         """
         assert self.valid_x(x)
+        xy = None
         for y in range(MAX_Y):
             if self.grid[x][y] == 0:
                 self.grid[x][y] = self.current_player
                 self.hash ^= self._zobrist_table[self._player_to_index(self.current_player)][x][y]
-                self.last_move = (x, y)  # TODO -- last move doesnt need to be stored in game state
+                xy = (x, y)
                 break
-        self._update_winner()
+        assert xy is not None
+        self._update_winner(xy)
         self._update_possible_moves()
         self._switch_players()
         return self
 
-    def _update_winner(self):
+    def _update_winner(self, last_move):
         """
         Check whether the last move that has been made satisfies the winning criteria. If so, updates game winner
         """
-        if self.last_move is not None:
-            x, y = self.last_move
-            for dx in [0, 1, -1]:  # TODO -- CHECK WIN BY MATRIX INNER PRODUCT
-                for dy in [0, 1, -1]:
-                    if dx == 0 and dy == 0:  # TODO -- METHOD NOW COMPUTES SOME AXES MULTIPLE TIMES!
-                        continue
-                    connect = 1 + self._count_in_direction(x, y, dx, dy) + self._count_in_direction(x, y, -dx, -dy)
-                    if connect >= CONNECT:
-                        self.winner = self.current_player
-                        return
+        if last_move is not None:
+            x, y = last_move
+            for dx, dy in [(0, 1), (1, 1), (1, 0), (1, -1)]:
+                connect = 1 + self._count_in_direction(x, y, dx, dy) + self._count_in_direction(x, y, -dx, -dy)
+                if connect >= CONNECT:
+                    self.winner = self.current_player
+                    return
 
     def _count_in_direction(self, x, y, dx, dy):
         """
@@ -193,13 +191,6 @@ class Connect4(GameState):
         :return: a simplified game state from the perspective of the current player
         """
         return self.current_player * self.grid
-
-    @staticmethod
-    def get_all_actions():
-        """
-        :return: All possible actions that can be played in a game of Connect 4
-        """
-        return list(range(MAX_X))  # TODO -- can be removed right?
 
 
 if __name__ == '__main__':

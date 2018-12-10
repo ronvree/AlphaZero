@@ -49,24 +49,17 @@ class Model:
 
 class NeuralNetwork(Model):
 
-    def __init__(self, game: callable, fit_parameters: dict=None):
+    def __init__(self, game: callable, input_shape: tuple):
         """
         Wrapper to make a Keras model compatible with this AlphaZero implementation
         :param game: The type of game that will be played by this model. (Just pass the constructor)
-        :param fit_parameters: A dict that allows parameters to be passed to the fit function
+        :param input_shape: The shape of the input of the network
         """
-        # Set default fit parameters
-        if fit_parameters is None:
-            self.fit_parameters = {}
-        else:
-            self.fit_parameters = fit_parameters
-        self.fit_parameters.setdefault('batch_size', 32)
-        self.fit_parameters.setdefault('epochs', 1)
-        self.fit_parameters.setdefault('verbose', 2)
+        assert len(input_shape) == 2 or len(input_shape) == 3
 
         self.action_space = game.action_space()
 
-        self.input_shape = game.board_shape() + (1,)
+        self.input_shape = input_shape if len(input_shape) == 3 else input_shape + (1,)
         self.output_size = len(self.action_space)
 
         self.action_index = {a: self.action_space.index(a) for a in self.action_space}
@@ -74,6 +67,15 @@ class NeuralNetwork(Model):
     def get_model(self) -> ks.Model:
         """
         :return: Keras model that makes (p, v) predictions
+        """
+        raise NotImplementedError
+
+    def state_input(self, s: GameState):
+        """
+        Converts a game state to suitable input for the network
+        :param s: The input state
+        :return: an input state representation that is compatible with the network
+                 Note: Output shape should be self.input_shape!
         """
         raise NotImplementedError
 
@@ -85,8 +87,9 @@ class NeuralNetwork(Model):
         :param s: The input state for the network
         :return: The predicted (p, v)-tuple
         """
-        state = s.get_observation()
-        state = np.reshape(state, (1,) + self.input_shape)  # Reshape input to a list of a single data point
+        # state = s.get_observation()
+        state = self.state_input(s)
+        # state = np.reshape(state, (1,) + self.input_shape)  # Reshape input to a list of a single data point
 
         [p_all], [[v]] = self.get_model().predict(state)  # Obtain predictions of the network
 
@@ -106,16 +109,28 @@ class NeuralNetwork(Model):
 
         return p, v
 
-    def fit(self, examples):
+    def fit(self, examples, fit_parameters: dict = None):
         """
         Train the Keras model on the given examples
         :param examples: A list of examples that is used to train the model
+        :param fit_parameters: A dict that allows parameters to be passed to the fit function
         """
+
+        # Set default fit parameters
+        if fit_parameters is None:
+            fit_parameters = {}
+        else:
+            fit_parameters = fit_parameters
+        fit_parameters.setdefault('batch_size', 32)
+        fit_parameters.setdefault('epochs', 1)
+        fit_parameters.setdefault('verbose', 2)
+
         # Prepare all examples for training
         input_boards, target_pis, target_vs = [], [], []
         for s, pi, v in examples:
             # Reshape the state observation to a shape suitable for convolution
-            input_boards.append(np.reshape(s, self.input_shape))
+            # input_boards.append(np.reshape(s, self.input_shape))
+            input_boards.append(self.state_input(s))
 
             # Map all actions to a fixed index
             pi_ = np.zeros(self.output_size)
@@ -133,7 +148,7 @@ class NeuralNetwork(Model):
         # Train the model on the examples
         self.get_model().fit(x=input_boards,
                              y=[target_pis, target_vs],
-                             **self.fit_parameters)  # TODO -- give fit parameters to fit function instead of constructor
+                             **fit_parameters)
 
     def save(self, filename: str):
         """
@@ -155,21 +170,20 @@ class ResidualNeuralNetwork(NeuralNetwork):
 
     def __init__(self,
                  game: callable,
+                 input_shape: tuple,
                  num_resd_block: int,
-                 fit_parameters: dict=None,
-                 compile_parameters: dict=None,
+                 compile_parameters: dict = None,
                  conv_block_params=None,
                  resd_block_params=None):
         """
         Create a new Residual Neural Network
         :param game: The type of game that will be played by this model. (Just pass the constructor)
-        :param fit_parameters: Dictionary that allows arguments to be passed to the fit function
         :param num_resd_block: The number of residual blocks in the network
         :param compile_parameters: Dictionary that allows arguments to be passed to the model compile function
         :param conv_block_params: Dictionary that allows arguments to be passed to the convolutional block
         :param resd_block_params: Dictionary that allows arguments to be passed to the residual blocks
         """
-        super().__init__(game, fit_parameters)
+        super().__init__(game, input_shape)
 
         #######################################
         # Set default parameters of the model #
@@ -248,7 +262,7 @@ class ResidualNeuralNetwork(NeuralNetwork):
         :param x: The input of the block
         :return: The output of the block
         """
-        x_in = x  # TODO -- test if shallow copy is allowed!
+        x_in = x
         x = Conv2D(**self.resd_block_params,
                    padding='same')(x)
         x = BatchNormalization()(x)
@@ -300,6 +314,9 @@ class ResidualNeuralNetwork(NeuralNetwork):
         :return: The Keras model responsible for outputting the (p, v) tuples
         """
         return self.model
+
+    def state_input(self, s: GameState):
+        raise NotImplementedError
 
     def deepcopy(self):
         raise NotImplementedError

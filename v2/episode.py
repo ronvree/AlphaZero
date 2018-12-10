@@ -66,10 +66,10 @@ class Episode:
 
 if __name__ == '__main__':
     from v2.tictactoe import TicTacToe
-    from v2.tictactoe_model import TestNetwork
+    from v2.tictactoe_model import TicTacToeModel
 
-    _m = TestNetwork()
+    _m = TicTacToeModel()
 
-    _e = Episode(TicTacToe, TestNetwork(), num_sims=3, num_expl=3)
+    _e = Episode(TicTacToe, TicTacToeModel(), num_sims=3, num_expl=3)
 
     [print(_ex) for _ex in _e.get_examples()]

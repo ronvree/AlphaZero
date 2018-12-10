@@ -97,14 +97,11 @@ class TicTacToe(GameState):
         """
         if last_move is not None:
             x, y = last_move
-            for dx in [0, 1, -1]:  # TODO -- CHECK WIN BY MATRIX INNER PRODUCT
-                for dy in [0, 1, -1]:
-                    if dx == 0 and dy == 0:  # TODO -- METHOD NOW COMPUTES SOME AXES MULTIPLE TIMES!
-                        continue
-                    connect = 1 + self._count_in_direction(x, y, dx, dy) + self._count_in_direction(x, y, -dx, -dy)
-                    if connect >= CONNECT:
-                        self.winner = self.current_player
-                        return
+            for dx, dy in [(0, 1), (1, 1), (1, 0), (1, -1)]:
+                connect = 1 + self._count_in_direction(x, y, dx, dy) + self._count_in_direction(x, y, -dx, -dy)
+                if connect >= CONNECT:
+                    self.winner = self.current_player
+                    return
 
     def _count_in_direction(self, x, y, dx, dy):
         """
@@ -148,11 +145,11 @@ class TicTacToe(GameState):
 
 if __name__ == '__main__':
 
-    state = TicTacToe()
+    _state = TicTacToe()
 
-    while not state.is_terminal():
-        moves = state.get_actions()
-        move = moves[np.random.choice(len(moves))]
-        state.do_move(move)
+    while not _state.is_terminal():
+        _moves = _state.get_actions()
+        _move = _moves[np.random.choice(len(_moves))]
+        _state.do_move(_move)
 
-        print(state)
+        print(_state)

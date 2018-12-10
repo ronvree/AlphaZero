@@ -74,9 +74,9 @@ class Pit:
 
 if __name__ == '__main__':
     from v2.tictactoe import TicTacToe
-    from v2.tictactoe_model import TestNetwork
+    from v2.tictactoe_model import TicTacToeModel
 
-    _m1, _m2 = TestNetwork(), TestNetwork()
+    _m1, _m2 = TicTacToeModel(), TicTacToeModel()
 
     _p = Pit(_m1, _m2, TicTacToe, num_sims=40, num_duels=100)
 

@@ -72,16 +72,8 @@ def policy_iter_self_play(game_setup: callable,
 
 if __name__ == '__main__':
     from v2.connect4 import Connect4
-    from v2.connect4_model import TestNetwork
+    from v2.connect4_model import Connect4Model
 
-    _m = TestNetwork()
-
-    # _m = policy_iter_self_play(TicTacToe,
-    #                            _m,
-    #                            num_iter=10,
-    #                            num_sims=10,
-    #                            num_duel=100,
-    #                            num_expl=30,
-    #                            num_epis=100)
+    _m = Connect4Model()
 
     _m = policy_iter_self_play(Connect4, _m)

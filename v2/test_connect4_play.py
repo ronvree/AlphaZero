@@ -71,6 +71,6 @@ def play_model_vs_random(rounds=100):
 
 if __name__ == '__main__':
 
-    # _m = play_model()
-    _m = play_model_vs_random()
+    _m = play_model()
+    # _m = play_model_vs_random()
 
