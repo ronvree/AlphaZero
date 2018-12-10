@@ -18,7 +18,7 @@ class GameTree:
 
     """
 
-    def __init__(self, s: GameState, depth: int, attr_func: callable=None):
+    def __init__(self, s: GameState, depth: int, attr_func: callable = None):
         """
         Create a new game tree
         :param s: The root state of the tree
@@ -75,7 +75,7 @@ class GameTree:
 
         # Define a function to obtain attributes from the model
         def get_model_attr(state: GameState, m: Model):
-            o = state.get_observation()
+            o = state
             p, v = m.predict(state)
             return {'model_prediction': {
                 'input': o,
@@ -101,7 +101,7 @@ class GameTree:
         for branch in self.branches.values():
             yield branch
 
-    def as_dot(self, graph_name: str='G', edge_val: callable=None) -> str:
+    def as_dot(self, graph_name: str = 'G', edge_val: callable = None) -> str:
         """
         Turn this game tree to a string in dot format
         :param graph_name: The name of the graph in the resulting dot text
@@ -117,7 +117,7 @@ class GameTree:
         dot += '}\n'
         return dot
 
-    def _as_dot(self, edge_val: callable=None) -> str:  # TODO -- special node visualization
+    def _as_dot(self, edge_val: callable = None) -> str:  # TODO -- special node visualization
         """
         Helper function of self.as_dot to be able to generate dot for subtrees recursively
         :return: Partial dot representation of this tree
@@ -152,7 +152,7 @@ class GameTree:
 
                 penwidth = int(1 + 10 * abs(attr / sum_attr))
 
-                dot += '{}->{} [penwidth={}, label={}, fontcolor=white];\n'\
+                dot += '{}->{} [penwidth={}, label={}, fontcolor=white];\n' \
                     .format(hash(state), hash(b.node['state']), penwidth, attr)
 
             dot += b._as_dot(edge_val=edge_val)
@@ -198,6 +198,7 @@ def get_model_edge_attr_p(a, node):
     :return: the value of the attribute
     """
     return node['model_prediction']['p'][a]
+
 
 # TODO -- add special visualization for node values
 

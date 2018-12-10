@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from v2.model import Model
 from v2.montecarlo import MCST
 
@@ -44,7 +46,7 @@ class Episode:
             # - The game state from the current player's perspective
             # - A policy obtained from the search tree
             # - A value indicating if the player eventually won the game (so is added later)
-            self.examples.append([state.get_observation(), pi])
+            self.examples.append([deepcopy(state), pi])
 
             # Perform the move
             state.do_move(a)

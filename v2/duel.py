@@ -81,4 +81,3 @@ if __name__ == '__main__':
     _p = Pit(_m1, _m2, TicTacToe, num_sims=40, num_duels=100)
 
     _r = _p.play()
-

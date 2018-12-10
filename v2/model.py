@@ -87,9 +87,8 @@ class NeuralNetwork(Model):
         :param s: The input state for the network
         :return: The predicted (p, v)-tuple
         """
-        # state = s.get_observation()
         state = self.state_input(s)
-        # state = np.reshape(state, (1,) + self.input_shape)  # Reshape input to a list of a single data point
+        state = np.reshape(state, (1,) + state.shape)  # Reshape input to a list of a single data point
 
         [p_all], [[v]] = self.get_model().predict(state)  # Obtain predictions of the network
 
