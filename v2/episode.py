@@ -31,6 +31,7 @@ class Episode:
         state = self.game_setup()
         move_counter = 0
         while not state.is_terminal():
+            print(state)
             # Perform a number of Monte Carlo Tree Search simulations
             # self.mcst.clear()
             for _ in range(num_sims):
@@ -51,6 +52,8 @@ class Episode:
             # Perform the move
             state.do_move(a)
             move_counter += 1
+
+        print(state)
 
         # If the game ended, add the final result to the examples and return them
         # reward=1 if player 1 won, reward=-1 if player 2 won

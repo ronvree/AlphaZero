@@ -136,6 +136,13 @@ class TicTacToe(GameState):
     def get_reward(self):
         return self.current_player * self.winner
 
+    def get_current_player(self):
+        """
+        :return: 1 if player 1 has to move
+                -1 if player 2 has to move
+        """
+        return self.current_player
+
 
 if __name__ == '__main__':
 

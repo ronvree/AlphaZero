@@ -7,7 +7,6 @@ from v2.episode import Episode
 from v2.model import Model
 from v2.config import *
 
-
 """
     Train the model through policy iteration
     
@@ -18,14 +17,14 @@ from v2.config import *
 
 def policy_iter_self_play(game_setup: callable,
                           model: Model,
-                          num_iter: int=NUM_ITER,
-                          num_epis: int=NUM_EPIS,
-                          num_exam: int=NUM_EXAM,
-                          num_sims_epis: int=NUM_SIMS_EPIS,
-                          num_sims_duel: int=NUM_SIMS_DUEL,
-                          num_duel: int=NUM_DUEL,
-                          num_expl: int=NUM_EXPL,
-                          win_threshold: int=WIN_THRESHOLD):
+                          num_iter: int = NUM_ITER,
+                          num_epis: int = NUM_EPIS,
+                          num_exam: int = NUM_EXAM,
+                          num_sims_epis: int = NUM_SIMS_EPIS,
+                          num_sims_duel: int = NUM_SIMS_DUEL,
+                          num_duel: int = NUM_DUEL,
+                          num_expl: int = NUM_EXPL,
+                          win_threshold: int = WIN_THRESHOLD):
     """
     Perform policy iteration to train the model
     :param game_setup: Function that returns the initial state of the game to be played

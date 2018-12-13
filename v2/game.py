@@ -65,3 +65,10 @@ class GameState:
                  0 otherwise
         """
         raise NotImplementedError
+
+    def get_current_player(self):
+        """
+        :return: 1 if player 1 has to move
+                -1 if player 2 has to move
+        """
+        raise NotImplementedError

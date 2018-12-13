@@ -22,7 +22,7 @@ class MCST(collections.MutableMapping):
          - v: A value for this game state (from the current player's perspective) as decided by the neural network
     """
 
-    def __init__(self, c_puct: float=1.0, epsilon: float=0.25, alpha: float=0.03):
+    def __init__(self, c_puct: float = 1.0, epsilon: float = 0.25, alpha: float = 0.03):
         """
         Create a new Monte Carlo Search Tree
         :param c_puct: Constant determining the level of exploration in action selection during the search procedure
@@ -81,7 +81,7 @@ class MCST(collections.MutableMapping):
         """
         return self._search(copy.deepcopy(state), model, root=True)
 
-    def _search(self, state: GameState, model: Model, root: bool=False):
+    def _search(self, state: GameState, model: Model, root: bool = False):
         """
         Helper function for self.search allowing for recursive search calls using only one state instance
         :param state: The game state on which the mcts should be performed
@@ -127,7 +127,7 @@ class MCST(collections.MutableMapping):
         n[a] += 1
         return -v
 
-    def pi(self, state: GameState, temperature: float=1):
+    def pi(self, state: GameState, temperature: float = 1):
         """
         Give an improved policy based on the counts in N
         :param state: The state from which the policy should be obtained
@@ -154,7 +154,7 @@ class MCST(collections.MutableMapping):
             else:
                 return {action: count / n_total for action, count in n_temp.items()}
 
-    def action(self, state: GameState, temperature: float=1):
+    def action(self, state: GameState, temperature: float = 1):
         """
         Sample an action from the policy obtained from the search tree
         :param state: The state from which the action should be taken

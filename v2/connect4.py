@@ -13,6 +13,7 @@ class Connect4(GameState):
     """
     A game state class corresponding to the game of Connect 4
     """
+
     def __init__(self):
         self.grid = np.zeros((MAX_X, MAX_Y))
         self.current_player = 1
@@ -185,6 +186,13 @@ class Connect4(GameState):
         :return: 1 if the current player won, -1 if the current player lost, 0 otherwise
         """
         return self.current_player * self.winner
+
+    def get_current_player(self):
+        """
+        :return: 1 if player 1 has to move
+                -1 if player 2 has to move
+        """
+        return self.current_player
 
 
 if __name__ == '__main__':

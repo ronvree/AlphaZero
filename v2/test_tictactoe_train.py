@@ -6,9 +6,6 @@ from v2.tictactoe_model import TicTacToeModel
 from v2.self_play_simple import sample_action_from_model, policy_iter_self_play
 
 
-
-
-
 if __name__ == '__main__':
     from v2.tictactoe import TicTacToe
 

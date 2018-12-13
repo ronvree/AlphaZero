@@ -68,7 +68,7 @@ def random_move(state: GameState):
     return actions[np.random.randint(0, len(actions))]
 
 
-def ask_model(state: GameState, model: Model, take_max: bool=False):
+def ask_model(state: GameState, model: Model, take_max: bool = False):
     p, _ = model.predict(state)
 
     actions = state.get_actions()
@@ -86,7 +86,7 @@ def ask_model(state: GameState, model: Model, take_max: bool=False):
     return a
 
 
-def ask_model_mcst(state: GameState, model: Model, mcst: MCST, temperature: float=0.0, searches: int=100):
+def ask_model_mcst(state: GameState, model: Model, mcst: MCST, temperature: float = 0.0, searches: int = 100):
     for _ in range(searches):
         mcst.search(state, model)
     a, _ = mcst.action(state, temperature=temperature)
