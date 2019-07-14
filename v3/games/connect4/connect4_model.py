@@ -1,14 +1,16 @@
 import numpy as np
 
-from v2.connect4 import Connect4
-from v2.model import ResidualNeuralNetwork
+import argparse
+
+from v3.games.connect4.connect4 import Connect4
+from v3.model_keras import ResidualNeuralNetwork
 
 
 class Connect4Model(ResidualNeuralNetwork):
 
-    def __init__(self):
+    def __init__(self, args: argparse.Namespace):
         super().__init__(Connect4,
-                         input_shape=Connect4.board_shape(),
+                         args,
                          num_resd_block=5,
                          conv_block_params={'kernel_size': (4, 4)},
                          resd_block_params={'kernel_size': (4, 4)})
@@ -18,6 +20,6 @@ class Connect4Model(ResidualNeuralNetwork):
 
     def deepcopy(self):
         self.model.save_weights('checkpoint.pth.tar')
-        self_copy = Connect4Model()
+        self_copy = Connect4Model(self.args)
         self_copy.model.load_weights('checkpoint.pth.tar')
         return self_copy

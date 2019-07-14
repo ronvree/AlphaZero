@@ -1,10 +1,10 @@
 
 
 if __name__ == '__main__':
-    from v2.tictactoe import TicTacToe
-    from v2.tictactoe_model import TicTacToeModel
+    from v2.games.tictactoe import TicTacToe
+    from v2.games.tictactoe_model import TicTacToeModel
     from v2.montecarlo import MCST
-    from v2.test_util_gametree import GameTree, get_model_edge_attr_p
+    from v2.tests.test_util_gametree import GameTree, get_model_edge_attr_p
 
     _s = TicTacToe()
     _m = TicTacToeModel()

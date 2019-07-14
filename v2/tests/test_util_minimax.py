@@ -69,7 +69,7 @@ class MiniMaxAlphaBetaAgent(MiniMaxAgent):
 
 
 if __name__ == '__main__':
-    from v2.tictactoe import TicTacToe
+    from v2.games.tictactoe import TicTacToe
     import random
 
     _s = TicTacToe()

@@ -1,8 +1,8 @@
 import numpy as np
 
-from v2.self_play_simple import sample_action_from_model
-from v2.tictactoe import TicTacToe
-from v2.tictactoe_model import TicTacToeModel
+from v2.tests.self_play_simple import sample_action_from_model
+from v2.games.tictactoe import TicTacToe
+from v2.games.tictactoe_model import TicTacToeModel
 
 
 def play_model(start=True):
@@ -23,7 +23,7 @@ def play_model(start=True):
             input_index = int(input())
             a = actions[input_index]
         else:
-            from v2.self_play_simple import sample_action_from_model
+            from v2.tests.self_play_simple import sample_action_from_model
             a = sample_action_from_model(model, state, take_max=True)
 
         state.do_move(a)

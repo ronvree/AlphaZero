@@ -1,7 +1,7 @@
 import numpy as np
 
 from v2.model import ResidualNeuralNetwork
-from v2.tictactoe import TicTacToe
+from v2.games.tictactoe import TicTacToe
 
 
 class TicTacToeModel(ResidualNeuralNetwork):

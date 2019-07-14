@@ -1,11 +1,13 @@
 import collections
 import copy
+import argparse
 from math import sqrt
 
 import numpy as np
 
-from v2.game import GameState
-from v2.model import Model
+from v3.game import GameState
+from v3.model import Model
+from v3.util import Distribution
 
 
 class MCST(collections.MutableMapping):
@@ -22,20 +24,18 @@ class MCST(collections.MutableMapping):
          - v: A value for this game state (from the current player's perspective) as decided by the neural network
     """
 
-    def __init__(self, c_puct: float = 1.0, epsilon: float = 0.25, alpha: float = 0.03):
+    def __init__(self, args: argparse.Namespace):  # TODO -- add relevant hyperparameters to documentation
         """
         Create a new Monte Carlo Search Tree
-        :param c_puct: Constant determining the level of exploration in action selection during the search procedure
-        :param alpha: Parameter of the Dirichlet distribution that is used to add noise to action selection
-                      in root nodes
-        :param epsilon: Constant determining the influence of noise in action selection in the root nodes
+        :param args: Parsed arguments containing hyperparameters
         """
-        assert c_puct >= 0
-        assert 0 <= epsilon <= 1
-        assert 0 <= alpha <= 1
-        self.c_puct = c_puct
-        self.epsilon = epsilon
-        self.alpha = alpha
+        assert args.c_puct >= 0
+        assert 0 <= args.epsilon <= 1
+        assert 0 <= args.alpha <= 1
+
+        self.c_puct = args.c_puct
+        self.epsilon = args.epsilon
+        self.alpha = args.alpha
         self.store = dict()
 
     @staticmethod
@@ -163,22 +163,24 @@ class MCST(collections.MutableMapping):
         :return: A two-tuple of (the sampled action, the policy it was sampled from)
         """
         assert 0 <= temperature <= 1
-
+        # Obtain the distribution
         pi = self.pi(state, temperature)
-        # Introduce an ordering in the (action, probability) pairs
-        items = list(pi.items())
-        # So a random.choice can select an index with probability p for picking an action
-        return items[np.random.choice(len(items), p=[p[1] for p in items])][0], pi
+        return Distribution(pi).sample(), pi
 
 
 if __name__ == '__main__':
-    from v2.games.connect4 import Connect4
-    from v2.model import DummyModel
+    from v3.games.tictactoe.tictactoe import TicTacToe
+    from v3.model import DummyModel
 
-    _tree = MCST(c_puct=1)
+    _args = argparse.Namespace()
+    _args.c_puct = 1
+    _args.epsilon = 0.25
+    _args.alpha = 0.03
 
-    _s = Connect4()
-    _m = DummyModel()
+    _tree = MCST(_args)
+
+    _s = TicTacToe(_args)
+    _m = DummyModel(TicTacToe, _args)
 
     while not _s.is_terminal():
         # _tree.clear()

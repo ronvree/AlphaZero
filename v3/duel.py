@@ -1,7 +1,8 @@
 import numpy as np
+import argparse
 
-from v2.model import Model
-from v2.montecarlo import MCST
+from v3.model import Model
+from v3.montecarlo import MCST
 
 
 class Pit:
@@ -9,24 +10,34 @@ class Pit:
         Two models enter the pit to play a number of games to see which model is better
     """
 
-    def __init__(self, m1: Model, m2: Model, game_setup: callable, num_duels: int, num_sims: int):
-        """
-        Create a new pit
-        :param m1: Model 1
-        :param m2: Model 2
-        :param game_setup: Function that returns the initial game state of the game to be played
-        :param num_duels: The number of games that the two models play
-        :param num_sims: The number of Monte Carlo searches each model gets before choosing an action
-        """
-        self.wins = np.zeros(2)  # Keep track of the number of games won for each model
-        self.m1, self.m2 = m1, m2
-        self.mcst1, self.mcst2 = MCST(), MCST()
-        self.game_setup = game_setup
-        self.num_duels = num_duels
-        self.num_sims = num_sims
-        self.terminal = False
+    # def __init__(self, m1: Model, m2: Model, game_setup: callable, num_duels: int, num_sims: int):
+    #     """
+    #     Create a new pit
+    #     :param m1: Model 1
+    #     :param m2: Model 2
+    #     :param game_setup: Function that returns the initial game state of the game to be played
+    #     :param num_duels: The number of games that the two models play
+    #     :param num_sims: The number of Monte Carlo searches each model gets before choosing an action
+    #     """
+    #     self.wins = np.zeros(2)  # Keep track of the number of games won for each model
+    #     self.m1, self.m2 = m1, m2
+    #     self.mcst1, self.mcst2 = MCST(), MCST()
+    #     self.game_setup = game_setup
+    #     self.num_duels = num_duels
+    #     self.num_sims = num_sims
+    #     self.terminal = False
 
-    def play(self):
+    def __init__(self, m1: Model, m2: Model, game: callable, args: argparse.Namespace):
+        self.wins = np.zeros(2)
+        self.m1, self.m2 = m1, m2
+        self.mcst1, self.mcst2 = MCST(args), MCST(args)
+        self.game_setup = game
+        self.num_duels = args.num_duels
+        self.num_sims = args.num_sims_duel
+        self.terminal = False
+        self.args = args
+
+    def play(self):  # TODO -- batches of games
         """
         Let the two models play duels against each other
         :return: A list containing the number of wins by model 1 and model 2, respectively
@@ -37,7 +48,7 @@ class Pit:
         # Let the models play a number of games
         for duel in range(self.num_duels):
             # Initialize a new game
-            state = self.game_setup()
+            state = self.game_setup(self.args)
             current_player = 0
 
             # Store which model corresponds to which player
@@ -67,11 +78,20 @@ class Pit:
 
 
 if __name__ == '__main__':
-    from v2.games.tictactoe import TicTacToe
-    from v2.games.tictactoe_model import TicTacToeModel
+    from v3.games.tictactoe.tictactoe import TicTacToe
+    from v3.model import DummyModel
 
-    _m1, _m2 = TicTacToeModel(), TicTacToeModel()
+    _args = argparse.Namespace()
+    _args.num_sims_duel = 40
+    _args.num_duels = 100
+    _args.epsilon = 0.25
+    _args.alpha = 0.03
+    _args.c_puct = 1
 
-    _p = Pit(_m1, _m2, TicTacToe, num_sims=40, num_duels=100)
+    _m1, _m2 = DummyModel(TicTacToe, _args), DummyModel(TicTacToe, _args)
+
+    _p = Pit(_m1, _m2, TicTacToe, _args)
 
     _r = _p.play()
+
+    print(_r)

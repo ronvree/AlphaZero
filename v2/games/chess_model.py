@@ -53,5 +53,3 @@ if __name__ == '__main__':
                                num_duel=30,
                                num_expl=15,
                                num_epis=100)
-
-

@@ -94,8 +94,8 @@ def ask_model_mcst(state: GameState, model: Model, mcst: MCST, temperature: floa
 
 
 if __name__ == '__main__':
-    from v2.connect4 import Connect4
-    from v2.connect4_model import Connect4Model
+    from v2.games.connect4 import Connect4
+    from v2.games.connect4_model import Connect4Model
 
     _m = Connect4Model()
     _m.model.load_weights('checkpoint.pth.tar')

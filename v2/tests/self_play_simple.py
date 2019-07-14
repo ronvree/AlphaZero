@@ -158,8 +158,8 @@ def sample_action_from_model(model: Model, state: GameState, take_max: bool=Fals
 
 
 if __name__ == '__main__':
-    from v2.tictactoe import TicTacToe
-    from v2.tictactoe_model import TicTacToeModel
+    from v2.games.tictactoe import TicTacToe
+    from v2.games.tictactoe_model import TicTacToeModel
 
     _m = TicTacToeModel()
 

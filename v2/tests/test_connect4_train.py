@@ -1,8 +1,8 @@
 
 
 if __name__ == '__main__':
-    from v2.connect4 import Connect4
-    from v2.connect4_model import Connect4Model
+    from v2.games.connect4 import Connect4
+    from v2.games.connect4_model import Connect4Model
     from v2.self_play import policy_iter_self_play
 
     _m = Connect4Model()

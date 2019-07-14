@@ -204,9 +204,9 @@ def get_model_edge_attr_p(a, node):
 
 
 if __name__ == '__main__':
-    from v2.tictactoe import TicTacToe
+    from v2.games.tictactoe import TicTacToe
     from v2.model import Model
-    from v2.tictactoe_model import TicTacToeModel
+    from v2.games.tictactoe_model import TicTacToeModel
 
     _s = TicTacToe()
     _m = TicTacToeModel()

@@ -1,11 +1,10 @@
 
 
 if __name__ == '__main__':
-    from v2.connect4 import Connect4
-    from v2.connect4_model import Connect4Model
+    from v2.games.connect4 import Connect4
+    from v2.games.connect4_model import Connect4Model
     from v2.montecarlo import MCST
-    from v2.test_util_gametree import GameTree, get_model_edge_attr_p, get_mcts_edge_attr_p, get_mcts_edge_attr_q, \
-    get_mcts_edge_attr_n
+    from v2.tests.test_util_gametree import GameTree, get_mcts_edge_attr_n
 
     _s = Connect4()
     _m = Connect4Model()
