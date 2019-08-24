@@ -88,11 +88,15 @@ if __name__ == '__main__':
 
     _args = get_dummy_args()
 
-    _m = TicTacToeModel(_args)
-    _m.model.load_weights('./saved_model/weights.h5')
+    # _m = TicTacToeModel(_args)
+    # _m.model.load_weights('./saved_model/weights.h5')
+
+    _m, _ = TicTacToeModel.load('./checkpoint')
 
     _t = MCST(_args)
 
-    play_random(TicTacToe, lambda s: ask_model_mcst(s, _m, _t, temperature=0, searches=1000), _args, start=False)
+    # play_random(TicTacToe, lambda s: ask_model_mcst(s, _m, _t, temperature=0, searches=1000), _args, start=False)
+
+    play_random(TicTacToe, lambda s: ask_model(s, _m, take_max=True), _args, start=False)
 
     # play_manual(TicTacToe, lambda s: ask_model_mcst(s, _m, _t, temperature=0, searches=1000), _args)

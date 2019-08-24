@@ -94,6 +94,9 @@ if __name__ == '__main__':
                         default=1e-4,
                         help='' +
                              'Value in original paper: 1e-4')
+    parser.add_argument('--disable_cuda',
+                        action='store_true',
+                        help='Flag that indicates whether cuda should be disabled')
 
     # Monte Carlo parameters
     parser.add_argument('--c_puct',
@@ -114,6 +117,8 @@ if __name__ == '__main__':
                              'Value in original paper: 0.25')
 
     args = parser.parse_args()
+
+    args.disable_cuda = True  # TODO -- remove
 
     model = Connect4Model(args)
 

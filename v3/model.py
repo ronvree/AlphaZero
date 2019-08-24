@@ -49,10 +49,11 @@ class Model:
         raise NotImplementedError
 
     @staticmethod
-    def load(directory_path: str) -> tuple:
+    def load(directory_path: str, load_examples: bool = False) -> tuple:
         """
         Load a model from the specified directory
         :param directory_path: The directory from which the model should be loaded
+        :param load_examples: Indicates whether examples should be loaded with the model if present
         :return: A two-tuple of:
                     - The loaded model
                     - Optional list of training examples that were saved with the model
