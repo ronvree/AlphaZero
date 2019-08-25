@@ -90,15 +90,15 @@ class TorchModel(Model, torch.nn.Module):
             dist = torch.zeros(self.out_size, device=device)
             for a, p in d.items():
                 dist[self.action_index[a]] = p  # TODO -- does this keep the gradient?
-            target_dists += [dist.unsqueeze(0)]              # TODO -- no, do properly
+            target_dists += [dist.unsqueeze(0)]              # TODO -- not sure, do properly
 
         input_states = torch.cat(input_states, dim=0)
         target_dists = torch.cat(target_dists, dim=0)
         target_values = torch.cat(target_values, dim=0)
 
         dataset = TensorDataset(input_states, target_dists, target_values)
-        data_loader = DataLoader(dataset, batch_size=self.args.batch_size, shuffle=False)
-        # TODO -- random sampler?
+        data_loader = DataLoader(dataset, batch_size=self.args.batch_size, shuffle=True)
+
         cce = lambda y_p, y_t: torch.mean(-torch.sum(torch.mul(y_t, torch.log(y_p)), dim=1))
         mse = torch.nn.MSELoss()
 

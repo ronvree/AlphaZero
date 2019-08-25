@@ -15,16 +15,19 @@ from v3.model import Model
 
 def policy_iter_self_play(game: callable,
                           model: Model,
-                          args: argparse.Namespace
+                          args: argparse.Namespace,
+                          examples: list = None,
                           ):
     """
     Train the model through self-play policy iteration
     :param game: The constructor of the game that should be played
     :param model: The model that should be trained
     :param args: Parsed arguments containing hyperparameters
+    :param examples: Train examples from previous self plays that can be used during training
     :return: the trained model
     """
-    examples = deque(maxlen=args.num_exam)
+    examples = examples or []
+    examples = deque(examples, maxlen=args.num_exam)
     model_counter = 0  # Count number of models that have been replaced so far
     for i in range(args.num_iter):
         # Play a number of games of self-play and obtain examples to learn from
