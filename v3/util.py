@@ -4,6 +4,10 @@ import numpy as np
 
 class Distribution(collections.MutableMapping):
 
+    """
+    Convenience class for sampling from a dict representing a probability distribution
+    """
+
     def __init__(self, d: dict):
         self.dist = dict(d)
 
@@ -22,7 +26,11 @@ class Distribution(collections.MutableMapping):
     def __iter__(self) -> iter:
         return iter(self.dist)
 
-    def sample(self):  # TODO - test
+    def sample(self):
+        """
+        Sample an action according to the distribution
+        :return: the sampled action
+        """
         # Sample a random number in [0, 1)
         r = np.random.random() * sum(self.dist.values())  # Note: Mult with dist sum as it might not sum to 1 exactly
         # Let r point to some item in the distribution
@@ -33,4 +41,24 @@ class Distribution(collections.MutableMapping):
         raise Exception('Something went wrong when sampling!')
 
     def sample_max(self):
+        """
+        Sample the action with highest probability
+        :return: the sampled action
+        """
         return max(self.dist.keys(), key=self.dist.get)
+
+
+if __name__ == '__main__':
+    from collections import Counter
+
+    _actions = list(range(10))
+    _probs = np.random.rand(len(_actions))
+    _probs /= sum(_probs)
+
+    _dict = {i: _probs[i] for i in _actions}
+
+    _dist = Distribution(_dict)
+    _samples = Counter([_dist.sample() for _ in range(10000)])
+
+    print(_probs)
+    print(_samples)

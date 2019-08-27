@@ -61,9 +61,7 @@ def fit_new_model(model: Model, examples: list):
     :param examples: The examples on which the copy should be trained
     :return: the trained copied model
     """
-    model.save('./checkpoint', examples)  # TODO -- MAKE SURE CHECKPOINT FILE EXISTS
-    candidate, _ = model.load('./checkpoint')  # TODO -- restore to deepcopy maybe
-    # candidate = model.deepcopy()
+    candidate = model.deepcopy()
     candidate.fit(examples)
     return candidate
 

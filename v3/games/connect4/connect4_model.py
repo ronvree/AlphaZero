@@ -5,7 +5,7 @@ import argparse
 
 from v3.game import GameState
 from v3.games.connect4.connect4 import Connect4
-from v3.model_keras import ResidualNeuralNetwork as KerasResNet
+# from v3.model_keras import ResidualNeuralNetwork as KerasResNet
 from v3.model_pytorch import ResidualNetwork as TorchResNet
 
 
@@ -42,3 +42,13 @@ class Connect4Model(TorchResNet):
     def state_input(self, s: GameState):
         device = torch.device('cuda' if self.use_cuda else 'cpu')
         return torch.Tensor(s.grid * s.get_current_player()).unsqueeze(0).to(device)
+
+    def deepcopy(self):
+        """
+        Create a deep copy of this model
+        :return: a deep copy of this model
+        """
+        model_copy = type(self)(self.args)
+        model_copy.load_state_dict(self.state_dict())
+        model_copy.get_optimizer().load_state_dict(self.get_optimizer().state_dict())
+        return model_copy

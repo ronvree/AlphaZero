@@ -42,7 +42,7 @@ class GameState:
         """
         raise NotImplementedError
 
-    def get_scores(self):  # TODO -- determine if Tensor or python list
+    def get_scores(self):  # TODO -- determine if ndarray or python list
         """
         :return: [1, 0] if player 1 won,
                  [0, 1] if player 2 won,

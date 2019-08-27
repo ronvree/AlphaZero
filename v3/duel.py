@@ -10,24 +10,17 @@ class Pit:
         Two models enter the pit to play a number of games to see which model is better
     """
 
-    # def __init__(self, m1: Model, m2: Model, game_setup: callable, num_duels: int, num_sims: int):
-    #     """
-    #     Create a new pit
-    #     :param m1: Model 1
-    #     :param m2: Model 2
-    #     :param game_setup: Function that returns the initial game state of the game to be played
-    #     :param num_duels: The number of games that the two models play
-    #     :param num_sims: The number of Monte Carlo searches each model gets before choosing an action
-    #     """
-    #     self.wins = np.zeros(2)  # Keep track of the number of games won for each model
-    #     self.m1, self.m2 = m1, m2
-    #     self.mcst1, self.mcst2 = MCST(), MCST()
-    #     self.game_setup = game_setup
-    #     self.num_duels = num_duels
-    #     self.num_sims = num_sims
-    #     self.terminal = False
-
     def __init__(self, m1: Model, m2: Model, game: callable, args: argparse.Namespace):
+        """
+        Create a new pit
+        :param m1: Model 1
+        :param m2: Model 2
+        :param game: Function that returns the initial game state of the game to be played (typically its constructor)
+                     Takes 1 argument. Namely the argparse.Namespace used to pass parameters
+        :param args: Parsed arguments containing hyperparameters
+                        - num_duels: the number of duels played in the pit
+                        - num_sims_duel: the number of Monte Carlo searches each model gets before selecting a move
+        """
         self.wins = np.zeros(2)
         self.m1, self.m2 = m1, m2
         self.mcst1, self.mcst2 = MCST(args), MCST(args)

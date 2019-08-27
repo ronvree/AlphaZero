@@ -24,10 +24,15 @@ class MCST(collections.MutableMapping):
          - v: A value for this game state (from the current player's perspective) as decided by the neural network
     """
 
-    def __init__(self, args: argparse.Namespace):  # TODO -- add relevant hyperparameters to documentation
+    def __init__(self, args: argparse.Namespace):
         """
         Create a new Monte Carlo Search Tree
         :param args: Parsed arguments containing hyperparameters
+                        - c_puct: parameter determining the level of exploration during searches
+                        - epsilon: parameter controlling the influence of the Dirichlet noise added to the root node
+                                   policy
+                        - alpha: parameterizes the Dirichlet distribution used to generate additional noise for the
+                                 policy at the root of the search tree
         """
         assert args.c_puct >= 0
         assert 0 <= args.epsilon <= 1

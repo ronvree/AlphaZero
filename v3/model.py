@@ -27,6 +27,16 @@ class Model:
         """
         raise NotImplementedError
 
+    def predict_batch(self, ss: list) -> tuple:
+        """
+        Compute policies and values for a batch of game states
+        :param ss: A list containing a number of GameState objects
+        :return: A two-tuple of
+                    - A list of policies corresponding to each game state in the input batch
+                    - A list of values corresponding to each game state in the input batch
+        """
+        raise NotImplementedError
+
     def fit(self, examples: list):
         """
         Train the model on the given examples
@@ -49,11 +59,10 @@ class Model:
         raise NotImplementedError
 
     @staticmethod
-    def load(directory_path: str, load_examples: bool = False) -> tuple:
+    def load(directory_path: str) -> tuple:
         """
-        Load a model from the specified directory
+        Load a model from the specified directory. If the directory contains examples, these will be loaded as well
         :param directory_path: The directory from which the model should be loaded
-        :param load_examples: Indicates whether examples should be loaded with the model if present
         :return: A two-tuple of:
                     - The loaded model
                     - Optional list of training examples that were saved with the model
@@ -69,9 +78,12 @@ class DummyModel(Model):
     def __init__(self, game: callable, args: argparse.Namespace):
         super().__init__(game, args)
 
-    def predict(self, s: GameState) -> tuple:
+    def predict(self, s: GameState) -> tuple:  # Gives a uniform distribution as policy and a value of 0.5
         actions = s.get_actions()
         return {a: 1 / len(actions) for a in actions}, 0.5
+
+    def predict_batch(self, ss: list) -> tuple:
+        return [{a: 1 / len(s.get_actions()) for a in s.get_actions()} for s in ss], [0.5] * len(ss)
 
     def fit(self, examples: list):
         pass  # Do nothing

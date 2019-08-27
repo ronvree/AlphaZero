@@ -76,6 +76,9 @@ class NeuralNetwork(Model):
 
         return p, v
 
+    def predict_batch(self, ss: list) -> tuple:
+        pass  # TODO
+
     def fit(self, examples: list):
         """
         Train the Keras model on the given examples

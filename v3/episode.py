@@ -5,7 +5,7 @@ from v3.model import Model
 from v3.montecarlo import MCST
 
 
-class Episode:
+class Episode:  # TODO -- episode batch!
     """
         One episode of self-play where one model generates the moves for the perspectives of both players.
         The progression of the game is stored as examples to learn from. Each example is a 3-tuple
@@ -20,6 +20,16 @@ class Episode:
                  model: Model,
                  args: argparse.Namespace
                  ):
+        """
+        Create and play a new episode
+       :param game_setup: Function that returns the initial game state of the game to be played (typically its
+                          constructor) Takes 1 argument. Namely the argparse.Namespace used to pass parameters.
+        :param model: The model that will select the moves during self play
+        :param args: Parsed arguments containing hyperparameters
+                      - num_sims_epis: the number of Monte Carlo searches the model gets before selecting a move
+                      - num_expl: the first number of moves have a higher degree of exploration. This parameter
+                                  specifies that number of moves
+        """
         self.game_setup = game_setup
         self.model = model
         self.examples = []
@@ -35,7 +45,7 @@ class Episode:
                 self.mcst.search(state, model)
 
             # The first moves have a temperature of 1 for increased exploration
-            tau = 1 if move_counter < args.num_expl else 0
+            tau = 1 if move_counter < args.num_expl else 0  # TODO -- shouldnt this count for both sides?
 
             # Obtain an improved policy from the tree
             a, pi = self.mcst.action(state, temperature=tau)
@@ -59,13 +69,6 @@ class Episode:
         for e in self.examples:
             e.append(reward)
             reward *= -1  # Switch player perspective
-
-        # Write episode to log file
-        # if args.log_file:  # TODO -- logging properly
-        #     with open(args.log_file, 'w') as f:
-        #         for s, c, a, pi, tau in self.log_items:
-        #             f.write('\n{}\nMove {}\nChose action: {}\nFrom policy: {}\nWith tau: {}\n'.format(
-        #                 s, c, a, pi, tau))
 
     def get_examples(self):
         """
